@@ -1,5 +1,5 @@
 #define PROG_NAME "Best_Blink_Ever"
-#define VERSION " V0.0.2 "
+#define VERSION " V0.0.3 "
 // Author: Yehia Ayman
 // Date: 20260125
 // A simple code on which to develope features.
@@ -41,7 +41,48 @@
 
 #define LED_BUILTIN 2
 
+//Claases defined below
+class Flasher {
+  // Class Member Variables
+  // These are initialized at startup
+  int ledPin;    // the number of the LED pin
+  long OnTime;   // milliseconds of on-time
+  long OffTime;  // milliseconds of off-time
 
+  // These maintain the current state
+  int ledState;                  // ledState used to set the LED
+  unsigned long previousMillis;  // will store last time LED was updated
+
+  // Constructor - creates a Flasher
+  // and initializes the member variables and state
+public:
+  Flasher(int pin, long on, long off) {
+    ledPin = pin;
+    pinMode(ledPin, OUTPUT);
+
+    OnTime = on;
+    OffTime = off;
+
+    ledState = LOW;
+    previousMillis = 0;
+  }
+  void Update() {  // defining a member function of the Flasher class
+    // check to see if it's time to change the state of the LED
+    unsigned long currentMillis = millis();
+
+    if ((ledState == HIGH) && (currentMillis - previousMillis >= OnTime)) {
+      ledState = LOW;                  // Turn it off
+      previousMillis = currentMillis;  // Remember the time
+      digitalWrite(ledPin, ledState);  // Update the actual LED
+    } else if ((ledState == LOW) && (currentMillis - previousMillis >= OffTime)) {
+      ledState = HIGH;                 // turn it on
+      previousMillis = currentMillis;  // Remember the time
+      digitalWrite(ledPin, ledState);  // Update the actual LED
+    }
+  }
+};
+
+Flasher led1(LED_BUILTIN, 250, 250);  // LED 2 blinks 0.5 period and 50% duty cycle
 // the setup function runs once when you press reset or power the board
 void setup() {
   // initialize digital pin LED_BUILTIN as an output.
@@ -55,9 +96,10 @@ void setup() {
 
 // the loop function runs over and over again forever
 void loop() {
-  digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
+led1.Update();
+  // digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
   
-  delay(1000);                      // wait for a second
-  digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
-  delay(1000);                      // wait for a second
+  // delay(1000);                      // wait for a second
+  // digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
+  // delay(1000);                      // wait for a second
 }
